@@ -1,51 +1,65 @@
 package main
 
 import (
-        "image"
-        "image/color"
-        "image/png"
-        "math"
-        "os"
-    )
+	"fmt"
+	"github.com/nfnt/resize"
+	"image"
+	"image/png"
+	"log"
+	"os"
+)
 
-    func main() {
-        filename := "orig/monk.png"
-        infile, err := os.Open(filename)
-        if err != nil {
-            // replace this with real error handling
-            panic(err.Error())
-        }
-        defer infile.Close()
+func main() {
+	resizeImage("orig/monk.png", "result.png", 0.2)
 
-        // Decode will figure out what type of image is in the file on its own.
-        // We just have to be sure all the image packages we want are imported.
-        src, _, err := image.Decode(infile)
-        if err != nil {
-            // replace this with real error handling
-            panic(err.Error())
-        }
+}
 
-        // Create a new grayscale image
-        bounds := src.Bounds()
-        w, h := bounds.Max.X, bounds.Max.Y
-        gray := image.NewGray(image.Rectangle{image.Point{0, 0}, image.Point{w, h}})
-        for x := 0; x < w; x++ {
-            for y := 0; y < h; y++ {
-                oldColor := src.At(x, y)
-                r, g, b, _ := oldColor.RGBA()
-                avg := 0.2125*float64(r) + 0.7154*float64(g) + 0.0721*float64(b)
-                grayColor := color.Gray{uint8(math.Ceil(avg))}
-                gray.Set(x, y, grayColor)
-            }
-        }
+/*
+	resizeImage: resize the image and save it
+*/
+func resizeImage(inFilename string, outFilename string, factor float64) {
+	//
+	// print a message about what we are converting
+	//
+	fmt.Println("Converting", inFilename, "to", outFilename, "using factor", factor)
 
-        // Encode the grayscale image to the output file
-        outfilename := "result.png"
-        outfile, err := os.Create(outfilename)
-        if err != nil {
-            // replace this with real error handling
-            panic(err.Error())
-        }
-        defer outfile.Close()
-        png.Encode(outfile, gray)
-    }
+	//
+	// Open the file and read in the image
+	//
+	infile, err := os.Open(inFilename)
+	errorCheck(err)
+	defer infile.Close()
+
+	//
+	//  load in the actual image data (decode image) and work out the new dimensions
+	//
+	srcImage, _, err := image.Decode(infile)
+	errorCheck(err)
+
+	srcImageWidth := srcImage.Bounds().Max.X
+	newImageWidth := uint(int(factor * float64(srcImageWidth)))
+
+	//
+	// Resize the image
+	//
+	imgResized := resize.Resize(newImageWidth, 0, srcImage, resize.MitchellNetravali)
+
+	//
+	// save the new image
+	//
+	outfile, err := os.Create(outFilename)
+	errorCheck(err)
+	defer outfile.Close()
+
+	png.Encode(outfile, imgResized)
+}
+
+/*
+	errorCheck: Helper function to check for errors and log/panic on fail
+*/
+func errorCheck(e error) {
+	if e != nil {
+		log.Fatalf("%s", e)
+		panic(e)
+	}
+}
