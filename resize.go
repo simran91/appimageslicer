@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"regexp"
 )
 
 func main() {
@@ -53,9 +54,17 @@ func main() {
 			destFilenameWitDir := fmt.Sprintf("%s/%s", destPath, origFilename)
 
 			//
-			// resize the image
+			// Only process it if it's a png file!
 			//
-			resizeImage(origFilenameWithDir, destFilenameWitDir, factorFloat)
+			matched, err := regexp.MatchString(".png$", origFilename)
+			errorCheck(err)
+
+			if (matched) {
+				resizeImage(origFilenameWithDir, destFilenameWitDir, factorFloat)
+			} else {
+				fmt.Println("Not processing", origFilenameWithDir, "as it's not a png file")
+			}
+
 		}
 
 	}
