@@ -1,3 +1,12 @@
+/*
+ *
+ * Please see README.md for more information
+ *
+ * Usage: resize
+ * Description: Resizes the files in the "orig" directory and outputs to an "auto-dest" directory
+ *
+ */
+
 package main
 
 import (
@@ -8,8 +17,8 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"strconv"
 	"regexp"
+	"strconv"
 )
 
 func main() {
@@ -17,7 +26,7 @@ func main() {
 	// Define the factors we want for the resizings
 	//
 	factors := [...]string{"0.5", "0.25", "1"}
-	
+
 	//
 	// clean auto-dest directory
 	//
@@ -31,8 +40,8 @@ func main() {
 		//
 		// convert the factor string to a float64
 		//
- 		factorFloat, err := strconv.ParseFloat(factor, 64)
- 		errorCheck(err)
+		factorFloat, err := strconv.ParseFloat(factor, 64)
+		errorCheck(err)
 
 		//
 		// Create the factor destination directory
@@ -40,7 +49,7 @@ func main() {
 		fmt.Println("Factoring for size", factor)
 		destPath := fmt.Sprintf("auto-dest/%sx", factor)
 		err = os.MkdirAll(destPath, 0777)
-		errorCheck(err)		
+		errorCheck(err)
 
 		//
 		// foreach file in the original directory, resize it!
@@ -49,7 +58,7 @@ func main() {
 		errorCheck(err)
 
 		for _, file := range files {
-			origFilename := file.Name() // eg. surfboard.png
+			origFilename := file.Name()                                 // eg. surfboard.png
 			origFilenameWithDir := fmt.Sprintf("orig/%s", origFilename) // eg. "orig/surfboard.png"
 			destFilenameWitDir := fmt.Sprintf("%s/%s", destPath, origFilename)
 
@@ -59,7 +68,7 @@ func main() {
 			matched, err := regexp.MatchString(".png$", origFilename)
 			errorCheck(err)
 
-			if (matched) {
+			if matched {
 				resizeImage(origFilenameWithDir, destFilenameWitDir, factorFloat)
 			} else {
 				fmt.Println("Not processing", origFilenameWithDir, "as it's not a png file")
@@ -68,7 +77,6 @@ func main() {
 		}
 
 	}
-
 
 	// resizeImage("orig/monk.png", "result.png", float64(0.2))
 
