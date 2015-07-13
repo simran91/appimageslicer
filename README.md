@@ -1,4 +1,5 @@
 # appimageslicer
+# Testing local change
 #
 # Original Authoring Date: 12/July/2015
 # Author: simran@dn.gs
