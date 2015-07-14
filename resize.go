@@ -60,7 +60,7 @@ func main() {
 		for _, file := range files {
 			origFilename := file.Name()                                 // eg. surfboard.png
 			origFilenameWithDir := fmt.Sprintf("orig/%s", origFilename) // eg. "orig/surfboard.png"
-			destFilenameWitDir := fmt.Sprintf("%s/%s", destPath, origFilename)
+			destFilenameWithDir := fmt.Sprintf("%s/%s", destPath, origFilename)
 
 			//
 			// Only process it if it's a png file!
@@ -69,7 +69,7 @@ func main() {
 			errorCheck(err)
 
 			if matched {
-				resizeImage(origFilenameWithDir, destFilenameWitDir, factorFloat)
+				resizeImage(origFilenameWithDir, destFilenameWithDir, factorFloat)
 			} else {
 				fmt.Println("Not processing", origFilenameWithDir, "as it's not a png file")
 			}
