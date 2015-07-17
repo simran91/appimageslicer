@@ -17,6 +17,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strconv"
 )
@@ -60,7 +61,15 @@ func main() {
 		for _, file := range files {
 			origFilename := file.Name()                                 // eg. surfboard.png
 			origFilenameWithDir := fmt.Sprintf("orig/%s", origFilename) // eg. "orig/surfboard.png"
-			destFilenameWithDir := fmt.Sprintf("%s/%s", destPath, origFilename)
+
+			//
+			// Work out what our output filename should be
+			//
+			origFilenameFilepathBase := filepath.Base(origFilename)
+			origFilenameExt := filepath.Ext(origFilenameFilepathBase) // eg. ".png"
+			origFilenameBasename := origFilenameFilepathBase[:len(origFilenameFilepathBase)-len(origFilenameExt)] // eg. "monk"
+
+			destFilenameWithDir := fmt.Sprintf("%s/%s@%sx%s", destPath, origFilenameBasename, factor, origFilenameExt)
 
 			//
 			// Only process it if it's a png file!
