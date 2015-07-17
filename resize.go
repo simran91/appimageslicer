@@ -26,7 +26,15 @@ func main() {
 	//
 	// Define the factors we want for the resizings
 	//
-	factors := [...]string{"0.5", "0.25", "1"}
+	// factors := [...]string{"0.5", "0.25", "1"}
+	//
+	//
+	// map from FactorMultiple to FactorName
+	factors := map[string]string{
+    "1.94366": "",
+    "1.655": "@2x",
+    "1": "@3x",
+}
 
 	//
 	// clean auto-dest directory
@@ -37,7 +45,7 @@ func main() {
 	//
 	// foreach factor
 	//
-	for _, factor := range factors {
+	for factor, factorName := range factors {
 		//
 		// convert the factor string to a float64
 		//
@@ -47,8 +55,9 @@ func main() {
 		//
 		// Create the factor destination directory
 		//
-		fmt.Println("Factoring for size", factor)
-		destPath := fmt.Sprintf("auto-dest/%sx", factor)
+		fmt.Println("Factoring for", factorName, "...size", factor)
+		// destPath := fmt.Sprintf("auto-dest/%sx", factor)
+		destPath := fmt.Sprintf("auto-dest")
 		err = os.MkdirAll(destPath, 0777)
 		errorCheck(err)
 
@@ -69,7 +78,7 @@ func main() {
 			origFilenameExt := filepath.Ext(origFilenameFilepathBase) // eg. ".png"
 			origFilenameBasename := origFilenameFilepathBase[:len(origFilenameFilepathBase)-len(origFilenameExt)] // eg. "monk"
 
-			destFilenameWithDir := fmt.Sprintf("%s/%s@%sx%s", destPath, origFilenameBasename, factor, origFilenameExt)
+			destFilenameWithDir := fmt.Sprintf("%s/%s%s%s", destPath, origFilenameBasename, factorName, origFilenameExt)
 
 			//
 			// Only process it if it's a png file!
