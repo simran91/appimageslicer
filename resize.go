@@ -31,8 +31,10 @@ func main() {
 	//
 	// map from FactorMultiple to FactorName
 	factors := map[string]string{
-    "0.302083334": "",
-    "0.604166667": "@2x",
+    // "0.302083334": "",
+    // "0.604166667": "@2x",
+    "0.3333333": "",
+    "0.6666666": "@2x",
     "1": "@3x",
 }
 
